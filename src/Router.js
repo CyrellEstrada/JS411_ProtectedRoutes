@@ -10,16 +10,37 @@ import Login from './components/Login'
 // Check the cookies for a cookie called "loggedIn"
 
 
+
+const checkAuth = (req) => {
+    const cookies0 = cookie.parse(document.cookie || "")
+    const status = cookies0.loggedIn
+
+    if (status) {
+        return true
+    } else {
+        return false
+    }
+}
+
+
 // Write ProtectedRoute function here
+const ProtectedRoute = (props) => {
+
+    const { component: Component, ...rest } = props;
+  
+    return (
+      checkAuth(props) === true ? ( <Component {...rest} /> ) : ( <Navigate to="/login" /> )
+    );
+  };
 
 
 const Router = () => {
     return (
         <Routes>
-            <Route path="/" element={<Home/>} />
+            <Route path="/" element={<ProtectedRoute component={Home}/>} />
             <Route path="/login" element={<Login/>} />
-            <Route path="/about" element={<About/>} />
-            <Route path="/car/:id" element={<Car/>} />
+            <Route path="/about" element={<ProtectedRoute component={About}/>} />
+            <Route path="/car/:id" element={<ProtectedRoute component={Car}/>} />
         </Routes>
     );
 };
